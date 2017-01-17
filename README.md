@@ -1,3 +1,5 @@
-Launch the program, you should enter the followings in terminal:
-1. scrapy crawl joblist
-2. scrapy crawl jobdescription
+## Launching the program, need to run the spiders:
+
+    $ scrapy crawl joblist
+    
+    $ scrapy crawl jobdescription

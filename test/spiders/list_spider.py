@@ -1,4 +1,4 @@
-import re
+import re # Import Regex
 import scrapy
 import csv
 from time import sleep
@@ -15,6 +15,9 @@ FILE_JOB_DESC = 'job_desc.csv'
 class JobListSpider(scrapy.Spider):
     name = "joblist"
     
+    """ Return an iterable of Requests (a list of requests or a generator function) 
+    which the Spider will begin to crawl from. Subsequent requests will be generated 
+    successively from these initial requests. """
     def start_requests(self):
         self.urls = [
             'http://jobs.careerpage.fr/career/multiposting-jobs-fr/',
@@ -23,11 +26,18 @@ class JobListSpider(scrapy.Spider):
         self.completed_count = 0
         self.job_links = [] 
         for url in self.urls:
-            yield scrapy.Request(url=url, callback=self.parse)
+        	# Callback: call parse function and send the result back 
+            yield scrapy.Request(url=url, callback=self.parse) 
 
+    """  a method that will be called to handle the response downloaded for 
+    each of the requests made. The response parameter is an instance of TextResponse 
+    that holds the page content and has further helpful methods to handle it.
+
+	The parse() method usually parses the response, extracting the scraped data as dicts 
+	and also finding new URLs to follow and creating new requests (Request) from them. """
     def parse(self, response):
-        for table in response.css('table.results'):
-            for tr in table.xpath('tbody/tr'):
+        for table in response.css('table.results'): # <table class="results"
+            for tr in table.xpath('tbody/tr'): #
                 
                 # Save job links in a list
                 self.job_links.append(tr.xpath('td/a/@href').extract_first())
@@ -71,7 +81,7 @@ class JobDescriptionSpider(scrapy.Spider):
         item = JobDescriptionItem()
         
         # Get reference from link 
-        match = re.match(r'.*/jobs/(\w+)', response.url)
+        match = re.match(r'.*/jobs/(\w+)', response.url) # re: Regular Expression 
         if match:
             item['reference'] = match.groups()[0]
         
@@ -83,6 +93,9 @@ class JobDescriptionSpider(scrapy.Spider):
 
         # Use Regular Expression to get country, location_name and postal_code from a string which contains all these information 
         match = re.match(r'^((?:\w|\s)+)\s\((\d{5})\),\s(\w+)$', basic_info[1])
+        # w: Alphanumeric characters
+        # s: Space
+        # d: Digits 
         if (match):
             geos = match.groups()
             item['country'] = geos[2]
@@ -97,6 +110,7 @@ class JobDescriptionSpider(scrapy.Spider):
         desc_holder = response.css('ul.description')[0]
         li_list = desc_holder.xpath('.//li')
         
+        # // is just an abbreviation for the descendant:: axis
         item['job_description'] = '\n'.join(li_list[0].xpath('.//p//descendant-or-self::text()').extract())
         item['profile_description'] = '\n'.join(li_list[1].xpath('.//p//descendant-or-self::text()').extract())
         

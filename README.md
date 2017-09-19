@@ -1,3 +1,6 @@
+## Overview:
+Scrapy is a fast high-level web crawling and web scraping framework, used to crawl websites and extract structured data from their pages. 
+
 ## Objectif:
 
 This project is aiming at exporting data to a CSV file from web pages.

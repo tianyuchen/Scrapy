@@ -1,5 +1,5 @@
 ## Overview:
-Scrapy is a fast high-level web crawling and web scraping framework, used to crawl websites and extract structured data from their pages. 
+Scrapy is a fast high-level web crawling and web scraping framework written in Python, used to crawl websites and extract structured data from their pages. 
 
 ## Objectif:
 
